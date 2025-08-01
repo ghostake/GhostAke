@@ -1,0 +1,62 @@
+header {
+    background-color: R;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+    border: black 2px solid;
+    border-radius: 80px;
+}
+
+header li {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: black;
+    border: white 2px solid;
+    border-radius: 20px;
+    text-align: center;
+}
+
+header li:hover {
+    background-color: #e0e0e0;
+    border: black 2px solid;
+    cursor: pointer;
+}
+.color-box {
+      
+      background-color: black;
+      animation: colorChange 10s infinite alternate;
+    }
+
+    @keyframes colorChange {
+      0%   { background-color: black; }
+      50%  { background-color: darkblue; }
+      100% { background-color: darkslateblue; }
+    }
+
+.animated-text {
+  display: inline-block;
+  animation: textColorChange 10s infinite;
+  border: 2px solid white;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.animated-text {
+      font-size: 40px;
+      line-height: 50px;
+      font-family: cursive, "Brush Script MT", "Lucida Handwriting";
+      font-weight: bold;
+      animation: textColorChange 10s infinite;
+    }
+
+    @keyframes textColorChange {
+      0%   { color: darkblue; }
+      50%  { color: black; }
+      100%  { color: green; }
+     
+    }
+
+
+    
