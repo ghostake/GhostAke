@@ -69,10 +69,12 @@
             
             <!-- Phone Auth -->
             <div id="phone-auth" style="display: none;">
+                <div id="recaptcha-container"></div>
                 <div class="input-group">
                     <label for="phone-number">Phone Number</label>
                     <input type="tel" id="phone-number" placeholder="+1 123-456-7890">
                 </div>
+
                 
                 <p id="phone-error" class="error-message"></p>
                 <button class="btn" onclick="sendOTP()">Send Verification Code</button>
@@ -93,7 +95,7 @@
     </div>
 
     <!-- Add this empty div somewhere in your HTML -->
-     
+
 <div id="recaptcha-container"></div>
 
     <!-- Firebase SDK -->
