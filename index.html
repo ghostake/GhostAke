@@ -6,7 +6,14 @@
     <title>Ruposri-Stay Smart</title>
     <link rel="stylesheet" href="indexcss.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
+<!-- Add before </body> -->
+<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+
+
 <body>
     <header>
         <div class="container">
@@ -31,8 +38,10 @@
         <div class="container">
             <div class="hero-content">
                 <h1>Ruposri</h1>
-                <p>Create engaging user experiences with smooth animations and transitions that delight your visitors.</p>
-                <button class="btn">Get Started</button>
+                <p>Stay Smart</p>
+                <button id="githubSignIn" class="btn-github">
+  <i class="fab fa-github"></i> Sign in with GitHub
+</button>
             </div>
         </div>
     </section>

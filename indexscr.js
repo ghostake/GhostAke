@@ -32,11 +32,11 @@ buttons.forEach(button => {
             existingRipple.remove();
         }
         
-        // Create ripple
+        // Create ripple 
         const ripple = document.createElement('span');
         ripple.classList.add('ripple');
         
-        // Position ripple
+        // Position ripple 
         const rect = this.getBoundingClientRect();
         const size = Math.max(rect.width, rect.height);
         const x = e.clientX - rect.left - size / 2;
@@ -81,3 +81,42 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
+
+// Firebase Config (replace with your actual config)
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    // ... other config
+  };
+  
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  
+  // Auth Providers
+  const githubProvider = new firebase.auth.GithubAuthProvider();
+  githubProvider.addScope('user:email');
+  
+  // GitHub Sign-In
+  document.getElementById('githubSignIn').addEventListener('click', () => {
+    firebase.auth().signInWithPopup(githubProvider)
+      .then((result) => {
+        const user = result.user;
+        console.log('GitHub User:', user);
+        alert(`Welcome, ${user.displayName || 'GitHub User'}!`);
+      })
+      .catch((error) => {
+        alert(`Error: ${error.message}`);
+      });
+  });
+  
+  // Track Auth State
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      console.log('User logged in:', user);
+      // Update UI (e.g., show profile picture)
+      document.getElementById('userAvatar').src = user.photoURL;
+    } else {
+      console.log('User logged out');
+    }
+  });

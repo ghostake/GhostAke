@@ -283,3 +283,26 @@ footer {
   padding: 2rem 0;
   margin-top: 3rem;
 }
+
+.btn-github {
+  background: #24292e;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-github:hover {
+  background: #2d3338;
+}
+
+.btn-github i {
+  font-size: 1.2rem;
+}
