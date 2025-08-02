@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruposri - Secure Authentication</title>
+    <title>Ruposri - Secure Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -132,7 +132,7 @@
             background: var(--secondary);
         }
         
-        .btn-google, .btn-github, .btn-phone {
+        .btn-phone {
             width: 100%;
             padding: 12px;
             border: none;
@@ -146,19 +146,6 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-        }
-        
-        .btn-google {
-            background: #DB4437;
-            color: white;
-        }
-        
-        .btn-github {
-            background: #333;
-            color: white;
-        }
-        
-        .btn-phone {
             background: #2ecc71;
             color: white;
         }
@@ -206,14 +193,25 @@
             margin-top: 15px;
         }
         
+        #recaptcha-container {
+            display: none;
+        }
+        
         @media (max-width: 480px) {
             .container {
                 border-radius: 0;
             }
         }
+
+        
     </style>
 </head>
 <body>
+
+
+
+
+
     <div class="container">
         <div class="header">
             <h1>Welcome to Ruposri</h1>
@@ -242,6 +240,10 @@
                 
                 <div class="divider">OR</div>
                 
+                <button class="btn-phone" onclick="showPhoneAuth()">
+                    <i class="fas fa-mobile-alt"></i> Continue with Phone
+                </button>
+            </div>
             
             <!-- Email Sign Up -->
             <div id="signup-form" class="auth-form">
@@ -267,7 +269,8 @@
             
             <!-- Phone Auth -->
             <div id="phone-auth" style="display: none;">
-                <div id="phone-authb"></div>  <!-- Must be empty -->
+                <div id="recaptcha-container"></div>
+                
                 <div class="input-group">
                     <label for="phone-number">Phone Number</label>
                     <input type="tel" id="phone-number" placeholder="+1 123-456-7890">
@@ -296,7 +299,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
     
     <script>
-        // Firebase Configuration (using your credentials)
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCcs5C_hwX4CCtNVgksKEhW8fcIw8De1hg",
             authDomain: "ruposri-1.firebaseapp.com",
@@ -308,10 +311,6 @@
         
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        
-        // GitHub OAuth Config
-        const githubProvider = new firebase.auth.GithubAuthProvider();
-        githubProvider.addScope('user:email');
         
         // DOM Elements
         const loginForm = document.getElementById('login-form');
@@ -393,31 +392,35 @@
                 });
         }
         
-        
         // Phone Auth Variables
         let confirmationResult;
+        let recaptchaVerifier;
         
         // Send OTP
         function sendOTP() {
             const phoneNumber = document.getElementById('phone-number').value;
             const errorElement = document.getElementById('phone-error');
             
-            // For testing, we'll use invisible reCAPTCHA
-            const appVerifier = new firebase.auth.RecaptchaVerifier('phone-authb', {
+            // Initialize reCAPTCHA
+            recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
                 size: 'invisible',
-                callback: () => verifyOTP() // Auto-submit if reCAPTCHA passes
+                callback: (response) => {
+                    // reCAPTCHA solved, proceed with OTP sending
+                    firebase.auth().signInWithPhoneNumber(phoneNumber, recaptchaVerifier)
+                        .then((result) => {
+                            confirmationResult = result;
+                            document.getElementById('otp-section').style.display = 'block';
+                            errorElement.style.display = 'none';
+                        })
+                        .catch((error) => {
+                            errorElement.textContent = error.message;
+                            errorElement.style.display = 'block';
+                        });
+                }
             });
             
-            firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
-                .then((result) => {
-                    confirmationResult = result;
-                    document.getElementById('otp-section').style.display = 'block';
-                    errorElement.style.display = 'none';
-                })
-                .catch((error) => {
-                    errorElement.textContent = error.message;
-                    errorElement.style.display = 'block';
-                });
+            // Execute reCAPTCHA
+            recaptchaVerifier.verify();
         }
         
         // Verify OTP
@@ -441,9 +444,6 @@
                 window.location.href = "dashboard.html";
             }
         });
-
-        
-
     </script>
 </body>
 </html>
