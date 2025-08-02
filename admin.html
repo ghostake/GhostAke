@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ruposri - Admin</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Admin Dashboard</h1>
+    <button onclick="logout()">Logout</button>
+  </header>
+
+  <main>
+    <section>
+      <h2>Orders</h2>
+      <table id="orders-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Product</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Add Product</h2>
+      <input type="text" id="product-name" placeholder="Name">
+      <input type="number" id="product-price" placeholder="Price">
+      <button onclick="addProduct()">Add Product</button>
+    </section>
+  </main>
+
+  <script src="/js/firebase.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/firestore.js"></script>
+  <script>
+    // Load orders
+    db.collection('orders').onSnapshot(snapshot => {
+      const tbody = document.querySelector('#orders-table tbody');
+      tbody.innerHTML = '';
+      
+      snapshot.forEach(doc => {
+        const order = doc.data();
+        tbody.innerHTML += `
+          <tr>
+            <td>${doc.id}</td>
+            <td>${order.productId}</td>
+            <td>${order.status}</td>
+            <td>
+              <select onchange="updateOrderStatus('${doc.id}', this.value)">
+                <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+              </select>
+            </td>
+          </tr>
+        `;
+      });
+    });
+
+    function addProduct() {
+      const name = document.getElementById('product-name').value;
+      const price = parseFloat(document.getElementById('product-price').value);
+      
+      addProductToFirestore(name, price, 'Description', 'image.jpg')
+        .then(() => alert('Product added!'));
+    }
+  </script>
+</body>
+</html>
