@@ -275,6 +275,7 @@
             
             <!-- Phone Auth -->
             <div id="phone-auth" style="display: none;">
+                <div id="recaptcha-container"></div>  <!-- Must be empty -->
                 <div class="input-group">
                     <label for="phone-number">Phone Number</label>
                     <input type="tel" id="phone-number" placeholder="+1 123-456-7890">
@@ -459,6 +460,15 @@
                 window.location.href = "dashboard.html";
             }
         });
+
+        window.onload = function() {
+  window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+    'size': 'invisible',  // or 'normal', 'compact'
+    'callback': (response) => {
+      // reCAPTCHA solved, proceed with phone auth
+    }
+  });
+};
     </script>
 </body>
 </html>
