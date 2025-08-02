@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script>
+        // Same Firebase config as index.html
+        firebase.initializeApp({
+            apiKey: "AIzaSyCcs5C_hwX4CCtNVgksKEhW8fcIw8De1hg",
+            authDomain: "ruposri-1.firebaseapp.com",
+            projectId: "ruposri-1"
+        });
+        
+        // Redirect if not logged in
+        firebase.auth().onAuthStateChanged((user) => {
+            if (!user) window.location.href = "/";
+        });
+        
+        function logout() {
+            firebase.auth().signOut();
+        }
+    </script>
+</head>
+<body>
+    <h1>Welcome to Your Dashboard</h1>
+    <button onclick="logout()">Logout</button>
+</body>
+</html>

@@ -1,122 +1,156 @@
-// Mobile Navigation
-const hamburger = document.querySelector('.hamburger');
-const navLinks = document.querySelector('.nav-links');
-const navItems = document.querySelectorAll('.nav-links li');
-
-hamburger.addEventListener('click', () => {
-    // Toggle Nav
-    navLinks.classList.toggle('nav-active');
-    
-    // Animate Links
-    navItems.forEach((link, index) => {
-        if (link.style.animation) {
-            link.style.animation = '';
-        } else {
-            link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 0.3}s`;
-        }
-    });
-    
-    // Hamburger Animation
-    hamburger.classList.toggle('toggle');
-});
-
-// Button Ripple Effect
-const buttons = document.querySelectorAll('.btn');
-buttons.forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Remove any existing ripple
-        const existingRipple = this.querySelector('.ripple');
-        if (existingRipple) {
-            existingRipple.remove();
-        }
-        
-        // Create ripple 
-        const ripple = document.createElement('span');
-        ripple.classList.add('ripple');
-        
-        // Position ripple 
-        const rect = this.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        const x = e.clientX - rect.left - size / 2;
-        const y = e.clientY - rect.top - size / 2;
-        
-        ripple.style.width = ripple.style.height = `${size}px`;
-        ripple.style.left = `${x}px`;
-        ripple.style.top = `${y}px`;
-        
-        this.appendChild(ripple);
-        
-        // Remove ripple after animation
-        setTimeout(() => {
-            ripple.remove();
-        }, 1000);
-    });
-});
-
-// Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        const targetId = this.getAttribute('href');
-        if (targetId === '#') return;
-        
-        const targetElement = document.querySelector(targetId);
-        if (targetElement) {
-            window.scrollTo({
-                top: targetElement.offsetTop - 70,
-                behavior: 'smooth'
-            });
-            
-            // Close mobile menu if open
-            if (navLinks.classList.contains('nav-active')) {
-                navLinks.classList.remove('nav-active');
-                hamburger.classList.remove('toggle');
-                navItems.forEach(link => {
-                    link.style.animation = '';
-                });
-            }
-        }
-    });
-});
-
-// Firebase Config (replace with your actual config)
+// Firebase Configuration (using your credentials)
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    // ... other config
-  };
-  
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  
-  // Auth Providers
-  const githubProvider = new firebase.auth.GithubAuthProvider();
-  githubProvider.addScope('user:email');
-  
-  // GitHub Sign-In
-  document.getElementById('githubSignIn').addEventListener('click', () => {
-    firebase.auth().signInWithPopup(githubProvider)
-      .then((result) => {
-        const user = result.user;
-        console.log('GitHub User:', user);
-        alert(`Welcome, ${user.displayName || 'GitHub User'}!`);
-      })
-      .catch((error) => {
-        alert(`Error: ${error.message}`);
-      });
-  });
-  
-  // Track Auth State
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      console.log('User logged in:', user);
-      // Update UI (e.g., show profile picture)
-      document.getElementById('userAvatar').src = user.photoURL;
+    apiKey: "AIzaSyCcs5C_hwX4CCtNVgksKEhW8fcIw8De1hg",
+    authDomain: "ruposri-1.firebaseapp.com",
+    projectId: "ruposri-1",
+    storageBucket: "ruposri-1.appspot.com",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+// GitHub OAuth Config
+const githubProvider = new firebase.auth.GithubAuthProvider();
+githubProvider.addScope('user:email');
+
+// DOM Elements
+const loginForm = document.getElementById('login-form');
+const signupForm = document.getElementById('signup-form');
+const phoneAuth = document.getElementById('phone-auth');
+
+// Tab Switching
+function switchTab(tab) {
+    if (tab === 'login') {
+        document.querySelector('.tab:nth-child(1)').classList.add('active');
+        document.querySelector('.tab:nth-child(2)').classList.remove('active');
+        loginForm.classList.add('active');
+        signupForm.classList.remove('active');
     } else {
-      console.log('User logged out');
+        document.querySelector('.tab:nth-child(1)').classList.remove('active');
+        document.querySelector('.tab:nth-child(2)').classList.add('active');
+        loginForm.classList.remove('active');
+        signupForm.classList.add('active');
     }
-  });
+}
+
+// Show Phone Auth
+function showPhoneAuth() {
+    loginForm.style.display = 'none';
+    signupForm.style.display = 'none';
+    phoneAuth.style.display = 'block';
+}
+
+// Back to Email Auth
+function backToEmailAuth() {
+    phoneAuth.style.display = 'none';
+    document.getElementById('otp-section').style.display = 'none';
+    loginForm.style.display = 'block';
+}
+
+// Email Login
+function loginWithEmail() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const errorElement = document.getElementById('login-error');
+    
+    firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => {
+            window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+            errorElement.textContent = error.message;
+            errorElement.style.display = 'block';
+        });
+}
+
+// Email Sign Up
+function signUpWithEmail() {
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const confirmPassword = document.getElementById('signup-confirm').value;
+    const errorElement = document.getElementById('signup-error');
+    const successElement = document.getElementById('signup-success');
+    
+    if (password !== confirmPassword) {
+        errorElement.textContent = "Passwords don't match!";
+        errorElement.style.display = 'block';
+        return;
+    }
+    
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            successElement.textContent = "Account created successfully!";
+            successElement.style.display = 'block';
+            errorElement.style.display = 'none';
+            
+            // Send verification email
+            userCredential.user.sendEmailVerification();
+        })
+        .catch((error) => {
+            errorElement.textContent = error.message;
+            errorElement.style.display = 'block';
+            successElement.style.display = 'none';
+        });
+}
+
+// GitHub Sign In
+function signInWithGitHub() {
+    firebase.auth().signInWithPopup(githubProvider)
+        .then(() => {
+            window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+            document.getElementById('login-error').textContent = error.message;
+            document.getElementById('login-error').style.display = 'block';
+        });
+}
+
+// Phone Auth Variables
+let confirmationResult;
+
+// Send OTP
+function sendOTP() {
+    const phoneNumber = document.getElementById('phone-number').value;
+    const errorElement = document.getElementById('phone-error');
+    
+    // For testing, we'll use invisible reCAPTCHA
+    const appVerifier = new firebase.auth.RecaptchaVerifier('phone-auth', {
+        size: 'invisible',
+        callback: () => verifyOTP() // Auto-submit if reCAPTCHA passes
+    });
+    
+    firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
+        .then((result) => {
+            confirmationResult = result;
+            document.getElementById('otp-section').style.display = 'block';
+            errorElement.style.display = 'none';
+        })
+        .catch((error) => {
+            errorElement.textContent = error.message;
+            errorElement.style.display = 'block';
+        });
+}
+
+// Verify OTP
+function verifyOTP() {
+    const otp = document.getElementById('otp-code').value;
+    const errorElement = document.getElementById('phone-error');
+    
+    confirmationResult.confirm(otp)
+        .then(() => {
+            window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+            errorElement.textContent = "Invalid OTP. Please try again.";
+            errorElement.style.display = 'block';
+        });
+}
+
+// Check if user is already logged in
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        window.location.href = "dashboard.html";
+    }
+});
