@@ -242,14 +242,6 @@
                 
                 <div class="divider">OR</div>
                 
-                <button class="btn-github" onclick="signInWithGitHub()">
-                    <i class="fab fa-github"></i> Continue with GitHub
-                </button>
-                
-                <button class="btn-phone" onclick="showPhoneAuth()">
-                    <i class="fas fa-mobile-alt"></i> Continue with Phone
-                </button>
-            </div>
             
             <!-- Email Sign Up -->
             <div id="signup-form" class="auth-form">
@@ -401,17 +393,6 @@
                 });
         }
         
-        // GitHub Sign In
-        function signInWithGitHub() {
-            firebase.auth().signInWithPopup(githubProvider)
-                .then(() => {
-                    window.location.href = "dashboard.html";
-                })
-                .catch((error) => {
-                    document.getElementById('login-error').textContent = error.message;
-                    document.getElementById('login-error').style.display = 'block';
-                });
-        }
         
         // Phone Auth Variables
         let confirmationResult;
