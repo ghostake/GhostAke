@@ -1,16 +1,12 @@
-// Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyCcs5C_hwX4CCtNVgksKEhW8fcIw8De1hg",
-    authDomain: "ruposri-1.firebaseapp.com",
-    projectId: "ruposri-1",
-    storageBucket: "ruposri-1.appspot.com",
-    messagingSenderId: "415958725383",
-    appId: "1:415958725383:web:8c30eb2974965ce4230ba2"
+    apiKey: "YOUR_API_KEY",
+    authDomain: "your-project.firebaseapp.com",
+    projectId: "your-project",
+    storageBucket: "your-project.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
   };
   
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
-  
-  // Initialize services
-  const auth = firebase.auth();
   const db = firebase.firestore();

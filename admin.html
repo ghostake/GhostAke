@@ -1,74 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Ruposri - Admin</title>
-  <link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8">
+    <title>Admin - Ruposri</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-  <header>
-    <h1>Admin Dashboard</h1>
-    <button onclick="logout()">Logout</button>
-  </header>
+<body class="bg-gray-50">
+    <header class="bg-indigo-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Ruposri Admin</h1>
+            <button id="logout-btn" class="bg-red-500 px-4 py-2 rounded">Logout</button>
+        </div>
+    </header>
 
-  <main>
-    <section>
-      <h2>Orders</h2>
-      <table id="orders-table">
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Product</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
+    <main class="container mx-auto p-4">
+        <h2 class="text-xl font-semibold mb-6">Order Management</h2>
+        
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <table class="min-w-full">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-6 py-3 text-left">Order ID</th>
+                        <th class="px-6 py-3 text-left">Product</th>
+                        <th class="px-6 py-3 text-left">Customer</th>
+                        <th class="px-6 py-3 text-left">Status</th>
+                        <th class="px-6 py-3 text-left">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-table" class="divide-y divide-gray-200">
+                    <!-- Orders will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </main>
 
-    <section>
-      <h2>Add Product</h2>
-      <input type="text" id="product-name" placeholder="Name">
-      <input type="number" id="product-price" placeholder="Price">
-      <button onclick="addProduct()">Add Product</button>
-    </section>
-  </main>
-
-  <script src="/js/firebase.js"></script>
-  <script src="/js/auth.js"></script>
-  <script src="/js/firestore.js"></script>
-  <script>
-    // Load orders
-    db.collection('orders').onSnapshot(snapshot => {
-      const tbody = document.querySelector('#orders-table tbody');
-      tbody.innerHTML = '';
-      
-      snapshot.forEach(doc => {
-        const order = doc.data();
-        tbody.innerHTML += `
-          <tr>
-            <td>${doc.id}</td>
-            <td>${order.productId}</td>
-            <td>${order.status}</td>
-            <td>
-              <select onchange="updateOrderStatus('${doc.id}', this.value)">
-                <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
-              </select>
-            </td>
-          </tr>
-        `;
-      });
-    });
-
-    function addProduct() {
-      const name = document.getElementById('product-name').value;
-      const price = parseFloat(document.getElementById('product-price').value);
-      
-      addProductToFirestore(name, price, 'Description', 'image.jpg')
-        .then(() => alert('Product added!'));
-    }
-  </script>
+    <script src="/js/firebase.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/orders.js"></script>
+    <script>
+        // Load orders
+        function loadOrders() {
+            db.collection('orders').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                const table = document.getElementById('orders-table');
+                table.innerHTML = '';
+                
+                snapshot.forEach(doc => {
+                    const order = doc.data();
+                    
+                    // Get user email
+                    db.collection('users').doc(order.userId).get().then(userDoc => {
+                        const userEmail = userDoc.data().email;
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="px-6 py-4">${doc.id.substring(0, 8)}...</td>
+                            <td class="px-6 py-4">${order.product} (x${order.quantity})</td>
+                            <td class="px-6 py-4">${userEmail}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 rounded-full text-xs 
+                                    ${order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                                      order.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
+                                      'bg-gray-100 text-gray-800'}">
+                                    ${order.status}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <select onchange="updateStatus('${doc.id}', this.value)" 
+                                        class="border rounded p-1">
+                                    <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                                    <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+                                </select>
+                            </td>
+                        `;
+                        table.appendChild(row);
+                    });
+                });
+            });
+        }
+        
+        // Initial load
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                loadOrders();
+            } else {
+                window.location.href = '/index.html';
+            }
+        });
+        
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            firebase.auth().signOut();
+        });
+    </script>
 </body>
 </html>

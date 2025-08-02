@@ -1,44 +1,22 @@
-// Email Sign Up
+// Email/password sign up
 function signUp(email, password) {
-    return auth.createUserWithEmailAndPassword(email, password)
-      .then((cred) => {
-        // Create user document in Firestore
-        return db.collection('users').doc(cred.user.uid).set({
-          email: email,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+  return firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then(cred => {
+      return db.collection('users').doc(cred.user.uid).set({
+        email: email,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-  }
-  
-  // Email Login
-  function login(email, password) {
-    return auth.signInWithEmailAndPassword(email, password);
-  }
-  
-  // Phone Auth
-  function sendOTP(phoneNumber) {
-    const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      size: 'invisible'
     });
-    return auth.signInWithPhoneNumber(phoneNumber, appVerifier);
+}
+
+// Email/password login
+function login(email, password) {
+  return firebase.auth().signInWithEmailAndPassword(email, password);
+}
+
+// Auth state listener
+firebase.auth().onAuthStateChanged(user => {
+  if (user && window.location.pathname === '/index.html') {
+    window.location.href = '/shop.html';
   }
-  
-  // Logout
-  function logout() {
-    return auth.signOut();
-  }
-  
-  // Auth State Listener
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      // User is logged in
-      if (window.location.pathname === '/index.html') {
-        window.location.href = '/dashboard.html';
-      }
-    } else {
-      // User is logged out
-      if (window.location.pathname !== '/index.html') {
-        window.location.href = '/index.html';
-      }
-    }
-  });
+});
