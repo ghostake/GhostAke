@@ -154,3 +154,9 @@ firebase.auth().onAuthStateChanged((user) => {
         window.location.href = "dashboard.html";
     }
 });
+
+
+const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+    size: 'invisible',
+    callback: () => verifyOTP()
+  });
