@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Ruposhi</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="logo">Ruposhi</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li id="auth-link"><a href="#" id="auth-action">Sign In</a></li>
+                <li id="dashboard-link" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="about">
+            <h1>About Us</h1>
+            <p>Welcome to Ruposhi, your premier e-commerce destination for quality products.</p>
+            
+            <h2>Our Story</h2>
+            <p>Founded in 2023, Ruposhi started with a simple mission: to provide customers with high-quality products at affordable prices. Over the years, we've grown into a trusted name in e-commerce, serving thousands of satisfied customers.</p>
+            
+            <h2>Our Values</h2>
+            <ul>
+                <li><strong>Quality:</strong> We carefully select all our products to ensure they meet our high standards.</li>
+                <li><strong>Customer Service:</strong> Our team is dedicated to providing exceptional service to every customer.</li>
+                <li><strong>Innovation:</strong> We're constantly improving our platform to enhance your shopping experience.</li>
+            </ul>
+            
+            <h2>Meet the Team</h2>
+            <p>Our team of dedicated professionals works around the clock to ensure your shopping experience is seamless and enjoyable.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Ruposhi. All rights reserved.</p>
+    </footer>
+
+    <!-- Auth Modal (same as index.html) -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title">Sign In</h2>
+            <form id="auth-form">
+                <div id="name-field" style="display:none;">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name">
+                </div>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit" id="submit-btn">Sign In</button>
+            </form>
+            <p id="auth-toggle">Don't have an account? <a href="#" id="toggle-action">Sign Up</a></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Ruposhi</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="logo">Ruposhi</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li id="auth-link"><a href="#" id="auth-action">Sign In</a></li>
+                <li id="dashboard-link" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Our Blog</h1>
+        
+        <article class="blog-post">
+            <h2>10 Tips for Online Shopping</h2>
+            <p class="date">Posted on June 15, 2023</p>
+            <p>Online shopping has become increasingly popular in recent years. Here are 10 tips to make your experience better...</p>
+            <a href="#" class="btn">Read More</a>
+        </article>
+        
+        <article class="blog-post">
+            <h2>The Future of E-commerce</h2>
+            <p class="date">Posted on May 28, 2023</p>
+            <p>With technology advancing rapidly, the e-commerce landscape is changing. Here's what to expect in the coming years...</p>
+            <a href="#" class="btn">Read More</a>
+        </article>
+        
+        <article class="blog-post">
+            <h2>How We Source Our Products</h2>
+            <p class="date">Posted on April 10, 2023</p>
+            <p>At Ruposhi, we take great care in selecting the products we offer. Learn about our rigorous selection process...</p>
+            <a href="#" class="btn">Read More</a>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Ruposhi. All rights reserved.</p>
+    </footer>
+
+    <!-- Auth Modal (same as index.html) -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title">Sign In</h2>
+            <form id="auth-form">
+                <div id="name-field" style="display:none;">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name">
+                </div>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit" id="submit-btn">Sign In</button>
+            </form>
+            <p id="auth-toggle">Don't have an account? <a href="#" id="toggle-action">Sign Up</a></p>
+        </div>
+    </div>
+</body>
+</html>
