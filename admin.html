@@ -92,6 +92,22 @@
         document.getElementById('logout-btn').addEventListener('click', () => {
             firebase.auth().signOut();
         });
+
+        // Live order listener (add to admin.js)
+function setupRealTimeOrders() {
+  firebase.firestore().collection("orders")
+    .onSnapshot((snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "modified") {
+          console.log("Order updated:", change.doc.data());
+          // Update your UI here
+        }
+      });
+    });
+}
+
+// Call this when admin page loads
+setupRealTimeOrders();
     </script>
 </body>
 </html>

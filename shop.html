@@ -55,9 +55,11 @@
                             class="bg-gray-500 text-white px-4 py-2 rounded">
                         Cancel
                     </button>
-                    <button onclick="placeOrder()" 
-                            class="bg-indigo-600 text-white px-4 py-2 rounded">
-                        Confirm Order
+                    <!-- Change from this -->
+<button onclick="confirmOrder()">Confirm</button>
+
+<!-- To this (passing the order ID) -->
+<button onclick="confirmOrder('${doc.id}')">Confirm</button>
                     </button>
                 </div>
             </div>
@@ -83,10 +85,22 @@
             document.getElementById('order-form').classList.remove('flex');
         }
         
-        function placeOrder() {
-            const user = firebase.auth().currentUser;
-            const quantity = document.getElementById('order-quantity').value;
-            const address = document.getElementById('order-address').value;
+    
+function placeOrder() {
+  const user = firebase.auth().currentUser;
+  
+  // This is where the structure is created
+  const orderData = {
+    userId: user.uid,                // Links order to user
+    product: "Premium T-Shirt",      // Hardcoded or from UI
+    status: "pending",               // Initial state
+    createdAt: firebase.firestore.FieldValue.serverTimestamp() // Auto timestamp
+  };
+
+  firebase.firestore().collection('orders').add(orderData)
+    .then(() => alert('Order placed!'))
+    .catch(error => console.error("Error:", error));
+}
             
             submitOrder(user.uid, currentProduct, quantity, address)
                 .then(() => {
@@ -96,7 +110,7 @@
                 .catch(error => {
                     alert('Error: ' + error.message);
                 });
-        }
+
         
         // Logout
         document.getElementById('logout-btn').addEventListener('click', () => {
@@ -104,6 +118,9 @@
                 window.location.href = '/index.html';
             });
         });
+
+       
+
     </script>
 </body>
 </html>
